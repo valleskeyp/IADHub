@@ -3,8 +3,6 @@ package screens;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -609,7 +607,7 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 	
 	public void cardMove(float _dt) {
-		// change this so it sends the Card objects toward each other
+		// TODO check teachers feedback to adjust this code
 		
 		if (card1.card.getX() <= 0 && card1.card.getY() <= 0) {
 			card1.card.setPosition(card1.card.getX() + (.3f * _dt), card1.card.getY() + (.18f * _dt));
