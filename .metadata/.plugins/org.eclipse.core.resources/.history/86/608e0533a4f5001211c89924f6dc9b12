@@ -1,0 +1,173 @@
+package com.valleskeyp.mgdgame;
+
+import java.util.List;
+
+import sqlite.ScoresDataSource;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.widget.EditText;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.android.gms.games.leaderboard.LeaderboardBuffer;
+import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
+import com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListener;
+import com.google.example.games.basegameutils.GameHelper;
+import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
+
+public class MainActivity extends AndroidApplication implements GameHelperListener, GoogleInterface {
+	private GameHelper aHelper;
+	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
+	ScoresDataSource datasource;
+	private List<String> highScores;
+	private String passedScore;
+	
+	public MainActivity(){
+        aHelper = new GameHelper(this);
+        aHelper.enableDebugLog(true, "MYTAG");
+        //create a listener for getting raw data back from leaderboard
+        theLeaderboardListener = new OnLeaderboardScoresLoadedListener() {
+			@Override
+			public void onLeaderboardScoresLoaded(int arg0,
+					LeaderboardBuffer arg1, LeaderboardScoreBuffer arg2) {
+				for(int i = 0; i < arg2.getCount(); i++) {
+					System.out.println(arg2.get(i).getScoreHolderDisplayName() + " : " + arg2.get(i).getDisplayScore());
+				}		
+			}
+		};
+	}
+	
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        datasource = new ScoresDataSource(this);
+        
+        AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+        cfg.useGL20 = false;
+        aHelper.setup(this);
+        initialize(new GameClass(this), cfg);
+    }
+	
+	// managing GameHelper class
+	@Override
+	protected void onStart() {
+		super.onStart();
+		aHelper.onStart(this);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		aHelper.onStop();
+	}
+	
+	@Override
+	protected void onActivityResult(int request, int response, Intent data) {
+		super.onActivityResult(request, response, data);
+		aHelper.onActivityResult(request, response, data);
+	}
+	//
+	public void onSignInFailed() {
+		
+	}
+
+	public void onSignInSucceeded() {
+		
+	}
+
+	public void Login() {
+		try {
+			runOnUiThread(new Runnable(){
+
+				//@Override
+				public void run(){
+					aHelper.beginUserInitiatedSignIn();
+				}
+			});
+		} catch (final Exception ex){
+
+		}
+	}
+
+	public void LogOut() {
+		try {
+			runOnUiThread(new Runnable(){
+
+				//@Override
+				public void run(){
+					aHelper.signOut();
+				}
+			});
+		} catch (final Exception ex){
+
+		}
+
+	}
+
+	public boolean getSignedIn() {
+		return aHelper.isSignedIn();
+	}
+
+	public void submitScore(int _score) {
+		aHelper.getGamesClient().submitScore(getString(R.string.leaderBoardID), _score);	
+	}
+
+	public void getScores() {
+		startActivityForResult(aHelper.getGamesClient().getLeaderboardIntent(getString(R.string.leaderBoardID)), 105);	
+	}
+
+	public void getScoresData() {
+		aHelper.getGamesClient().loadPlayerCenteredScores(theLeaderboardListener,
+				getString(R.string.leaderBoardID), 
+				1, 
+				1, 
+				25)	;
+	}
+
+	@Override
+	public void goOfflineBoard() {
+		Intent intent = new Intent(this, ScoreActivity.class);
+		startActivity(intent);
+	}
+
+	@Override
+	public void scorePopup(int score) {
+		passedScore = String.valueOf(score);
+		runOnUiThread(new Runnable(){
+
+			//@Override
+			public void run(){
+				AlertDialog.Builder alert = new AlertDialog.Builder(this);
+				
+				alert.setTitle("Game Over");
+				alert.setMessage("Input your name to save your score!");
+
+				// Set an EditText view to get user input 
+				final EditText input = new EditText(this);
+				alert.setView(input);
+
+				alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						if (input.length() > 0) {
+							String value = input.getText().toString();
+							datasource.open();
+							datasource.create(new String[] {value, passedScore});
+						}
+					}
+				});
+
+				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						
+					}
+				});
+				alert.show();
+			}
+		});
+	}
+}

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.valleskeyp.mgdgame.GoogleInterface;
 
 public class SplashScreen implements Screen{
 	private OrthographicCamera camera;
@@ -17,7 +18,12 @@ public class SplashScreen implements Screen{
 	private Texture texture;
 	private Sprite sprite;
 	float time = 0;
+	GoogleInterface platformInterface;
 	
+	public SplashScreen(GoogleInterface aInterface) {
+		platformInterface = aInterface;
+	}
+
 	@Override
 	public void show() {
 		float w = Gdx.graphics.getWidth();
@@ -44,7 +50,7 @@ public class SplashScreen implements Screen{
 		float dt = Gdx.graphics.getDeltaTime();
 		time += dt;
 		if (time >= 3) {
-			((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+			((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
 		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);

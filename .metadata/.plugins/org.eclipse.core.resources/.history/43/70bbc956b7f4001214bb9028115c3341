@@ -1,0 +1,36 @@
+package com.valleskeyp.mgdgame;
+
+public class MobileInterface implements GoogleInterface {
+	
+	@Override
+	public void Login() {
+		int i = 1;
+		i +=i;
+	}
+
+	@Override
+	public void LogOut() {
+		
+	}
+
+	@Override
+	public boolean getSignedIn() {
+		
+	return false;
+	}
+
+	public void submitScore(int score){
+		
+	}
+
+	@Override
+	public void getScores() {
+		
+	}
+
+	@Override
+	public void getScoresData() {
+		
+	}
+	
+}

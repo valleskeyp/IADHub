@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.valleskeyp.mgdgame.GoogleInterface"/>
+<fullyQualifiedTypeName name="com.google.example.games.basegameutils.GameHelper.GameHelperListener"/>
+<fullyQualifiedTypeName name="com.google.example.games.basegameutils.GameHelper"/>
+<fullyQualifiedTypeName name="com.google.android.gms.games.leaderboard.OnLeaderboardScoresLoadedListener"/>
+<fullyQualifiedTypeName name="com.valleskeyp.mgdgame.MobileInterface"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
+<fullyQualifiedTypeName name="sun.util.logging.resources.logging"/>
+<fullyQualifiedTypeName name="com.valleskeyp.mgdgame.GameClass"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.g2d.BitmapFont"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,78 @@
+package sqlite;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class ScoresDataSource {
+	
+	SQLiteOpenHelper dbhelper;
+	SQLiteDatabase database;
+	
+	private static final String[] allColumns = {
+		DatabaseAdapter.COLUMN_ID,
+		DatabaseAdapter.PLAYER_NAME,
+		DatabaseAdapter.SCORE,
+		DatabaseAdapter.UPDATEDAT
+	};
+	
+	public ScoresDataSource(Context context) {
+		dbhelper = new DatabaseAdapter(context);
+	}
+	
+	public void open() {
+		database = dbhelper.getWritableDatabase();
+	}
+	
+	public void close() {
+		dbhelper.close();
+	}
+	
+	public long create(String[] items) { // Add a score
+		ContentValues values = new ContentValues();
+		
+		values.put(DatabaseAdapter.PLAYER_NAME, items[0]);
+		values.put(DatabaseAdapter.SCORE, items[1]);
+		values.put(DatabaseAdapter.UPDATEDAT, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		long id = database.insert(DatabaseAdapter.TABLE_SCORES, null, values);
+		return id;
+	}
+	
+	public List<String> findAll() { // get all scores to list
+		
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, null, null, null, null, null);
+		List<String> employees = cursorToList(cursor);
+		return employees;
+	}
+	public List<String> findFilter(String selection, String orderBy) { // get all scores through filter
+		
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, selection, null, null, null, orderBy);
+		List<String> employees = cursorToList(cursor);
+		return employees;
+	}
+	
+	private List<String> cursorToList(Cursor cursor) { // returns list of strings to be displayed in listview - used in 'find' methods
+		List<String> employees = new ArrayList<String>();
+		if (cursor.getCount() > 0) {
+			while (cursor.moveToNext()) {
+				String str = 				 
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.PLAYER_NAME)) + ": " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.SCORE)) + " -- " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.UPDATEDAT));
+				employees.add(str);
+			}
+		}
+		return employees;
+	}
+	
+	public void deleteRecords() { // delete all entries
+		database.delete(DatabaseAdapter.TABLE_SCORES, null, null);
+	}
+}

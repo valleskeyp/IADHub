@@ -13,13 +13,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
+import com.valleskeyp.mgdgame.GoogleInterface;
 
 public class InstructionScreen implements Screen, InputProcessor {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
 	private Sprite sprite, backButton;
+	GoogleInterface platformInterface;
 	
+	public InstructionScreen(GoogleInterface aInterface) {
+		platformInterface = aInterface;
+	}
+
 	@Override
 	public void show() {
 		float w = Gdx.graphics.getWidth();
@@ -77,7 +83,7 @@ public class InstructionScreen implements Screen, InputProcessor {
 
         Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
         if (backButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-        	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
 		}
 		return true;
 	}

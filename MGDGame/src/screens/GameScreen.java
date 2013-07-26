@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.valleskeyp.mgdgame.Card;
+import com.valleskeyp.mgdgame.GoogleInterface;
 
 public class GameScreen implements Screen, InputProcessor {
 
@@ -48,13 +50,26 @@ public class GameScreen implements Screen, InputProcessor {
 	
 	public Array<HashMap<String, Float>> coord = new Array<HashMap<String, Float>>();
 	public Array<Card> cards;
+	GoogleInterface platformInterface;
 	
+	boolean loggedIn;
+	int score = 0;
+	private String scoreString = "Score: ";
+	private BitmapFont font;
+	
+	public GameScreen(GoogleInterface aInterface) {
+		platformInterface = aInterface;
+		loggedIn = platformInterface.getSignedIn();
+	}
+
 	@Override
 	public void show() {		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		Gdx.input.setInputProcessor(this);
 		
+		font = new BitmapFont(Gdx.files.internal("fonts/LucidaConsoleFont.fnt"), Gdx.files.internal("fonts/LucidaConsoleFont_0.png"), false);
+		font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("data/BGMusic.mp3"));
 		bgMusic.setVolume(0.15f);
@@ -198,7 +213,7 @@ public class GameScreen implements Screen, InputProcessor {
 		displayCards();
 	}
 
-	private void restart() { 
+	public void restart() { 
 		int i = 0;
 		int length = 0;
 
@@ -253,7 +268,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
-	private void displayCards() {
+	public void displayCards() {
 		showingCards = true;
 		for (Card card : cards) {
 			card.flipCard();
@@ -262,6 +277,9 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void dispose() {  //     DON'T FORGET TO DISPOSE OF EVERYTHING POSSIBLE!
+		if (loggedIn) { // save score before game closes
+			platformInterface.submitScore(score);
+		}
 		batch.dispose();
 		texture.dispose();
 		correct.dispose();
@@ -305,7 +323,6 @@ public class GameScreen implements Screen, InputProcessor {
 				backButton.draw(batch);
 				if (isPlaying) {//										WHILE GAME PLAYING
 					pause.draw(batch);
-
 					if(answer.equals("correct")) { //         			   --ON RIGHT ANSWER
 						cardMove(dt);
 						if (Intersector.overlaps(card1.card.getBoundingRectangle(), card2.card.getBoundingRectangle())) {
@@ -322,7 +339,6 @@ public class GameScreen implements Screen, InputProcessor {
 							}
 							card1 = null;
 							card2 = null;
-							guessedInARow += 1;
 						}
 					}
 
@@ -343,6 +359,8 @@ public class GameScreen implements Screen, InputProcessor {
 					for (Card card : cards) {
 						card.draw(batch, dt);
 					}
+					//font.draw(batch, "score", 100, 100);
+// TODO fonts just wont work...
 					batch.end();
 				} else {  //										  WHILE GAME PAUSED
 					switch (wrongGuesses) { // 							----DISPLAY WRONG GUESS ALLOWANCE
@@ -545,6 +563,12 @@ public class GameScreen implements Screen, InputProcessor {
 							if (card1.letter.equals(card2.letter)) { // 		-- RIGHT ANSWER
 								correct.play(1.0f);
 								answer = "correct";
+								if (guessedInARow < 3) {
+									score += 100;
+								} else if (guessedInARow >= 3) {
+									score += 300;
+								}
+								guessedInARow += 1;
 								// now interpolate card movement in batch and reset after
 							} else { //							-- WRONG ANSWER
 								incorrect.play(1.0f);
@@ -552,6 +576,13 @@ public class GameScreen implements Screen, InputProcessor {
 								wrongGuesses -= 1;
 								guessedInARow = 0;
 								if (wrongGuesses == 0) {
+									if (loggedIn) {
+										platformInterface.submitScore(score);
+									} else {
+										bgMusic.stop();
+						            	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
+										platformInterface.scorePopup(score);
+									}
 									answer = "";
 									gameOver = true;
 									gameLevel = 0;
@@ -580,7 +611,7 @@ public class GameScreen implements Screen, InputProcessor {
 			}
         	if (backButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
         		bgMusic.stop();
-            	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+            	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
     		}
         }
         if (!gameOver && cards.size > 0) {

@@ -1,0 +1,5 @@
+package com.valleskeyp.mgdgame;
+
+public interface GoogleInterface {
+
+}

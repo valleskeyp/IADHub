@@ -13,15 +13,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.Ray;
+import com.valleskeyp.mgdgame.GoogleInterface;
+
 
 public class MenuScreen implements Screen, InputProcessor {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
-	private Sprite sprite, playButton, instructionButton, creditsButton;
+	private Sprite sprite, login, logout, scoreButton, playButton, instructionButton, creditsButton;
+	GoogleInterface platformInterface;
+	Boolean loggedIn = false;
 	
+	public MenuScreen(GoogleInterface aInterface) {
+		platformInterface = aInterface;
+		loggedIn = platformInterface.getSignedIn();
+	}
+
 	@Override
 	public void show() {
+		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		
@@ -39,6 +49,30 @@ public class MenuScreen implements Screen, InputProcessor {
 		sprite.setSize(1f, 1f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
+		// google play buttons
+		
+		texture = new Texture(Gdx.files.internal("data/login.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		login = new Sprite(region);
+		login.setSize(.2f, .07f);
+		login.setOrigin(login.getWidth()/2, login.getHeight()/2);
+		login.setPosition(-.45f, -.235f);
+		
+		texture = new Texture(Gdx.files.internal("data/logout.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		logout = new Sprite(region);
+		logout.setSize(.2f, .07f);
+		logout.setOrigin(logout.getWidth()/2, logout.getHeight()/2);
+		logout.setPosition(-.45f, -.235f);
+		
+		// menu buttons
 		
 		texture = new Texture(Gdx.files.internal("data/playButton.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -70,6 +104,16 @@ public class MenuScreen implements Screen, InputProcessor {
 		creditsButton.setOrigin(creditsButton.getWidth()/2, creditsButton.getHeight()/2);
 		creditsButton.setPosition(.1f, -.24f);
 		
+		texture = new Texture(Gdx.files.internal("data/scoreButton.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 256, 64);
+		
+		scoreButton = new Sprite(region);
+		scoreButton.setSize(.3328f, .0832f);
+		scoreButton.setOrigin(scoreButton.getWidth()/2, scoreButton.getHeight()/2);
+		scoreButton.setPosition(-.23f, -.24f);
+		
 	}
 	
 	@Override
@@ -81,9 +125,15 @@ public class MenuScreen implements Screen, InputProcessor {
 		
 		batch.begin();
 		sprite.draw(batch);
+		if (loggedIn) {
+			logout.draw(batch);
+		} else {
+			login.draw(batch);
+		}
 		playButton.draw(batch);
 		instructionButton.draw(batch);
 		creditsButton.draw(batch);
+		scoreButton.draw(batch);
 		batch.end();	
 	}
 
@@ -100,11 +150,25 @@ public class MenuScreen implements Screen, InputProcessor {
 
         Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
         if (playButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-        	((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(platformInterface));
 		} else if (instructionButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-			((Game) Gdx.app.getApplicationListener()).setScreen(new InstructionScreen());
+			((Game) Gdx.app.getApplicationListener()).setScreen(new InstructionScreen(platformInterface));
 		} else if (creditsButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
-			((Game) Gdx.app.getApplicationListener()).setScreen(new CreditsScreen());
+			((Game) Gdx.app.getApplicationListener()).setScreen(new CreditsScreen(platformInterface));
+		} else if (scoreButton.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+			if (loggedIn) {
+				platformInterface.getScores();
+			} else {
+				platformInterface.goOfflineBoard();
+			}
+		}
+        
+        if (login.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == false) {
+			platformInterface.Login();
+			loggedIn = true;
+		} else if (logout.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == true) {
+			platformInterface.LogOut();
+			loggedIn = false;
 		}
 		return true;
 	}

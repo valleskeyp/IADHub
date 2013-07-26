@@ -1,0 +1,6 @@
+package com.valleskeyp.mgdgame;
+
+public interface GameInterface {
+	public void restart();
+	public void displayCards();
+}

@@ -1,0 +1,40 @@
+package sqlite;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DatabaseAdapter extends SQLiteOpenHelper {
+
+	private static final String DATABASE_NAME = "scores.db";
+	private static final int DATABASE_VERSION = 1;
+	
+	public static final String TABLE_SCORES = "scores";
+	public static final String COLUMN_ID = "scoreId";
+	public static final String PLAYER_NAME = "playerName";
+	public static final String SCORE = "score";
+	public static final String UPDATEDAT = "updatedAt";
+	
+	private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_SCORES + " (" +
+								COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+								PLAYER_NAME + " TEXT, " +
+								SCORE + " INT," +
+								UPDATEDAT + " TEXT";
+	
+	public DatabaseAdapter(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		db.execSQL(TABLE_CREATE);
+
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCORES);
+		onCreate(db);
+	}
+
+}

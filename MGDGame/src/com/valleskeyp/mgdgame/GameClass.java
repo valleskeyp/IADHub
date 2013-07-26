@@ -5,10 +5,16 @@ import screens.SplashScreen;
 import com.badlogic.gdx.Game;
 
 public class GameClass extends Game {
-
+	
+	private GoogleInterface platformInterface;
+	
+	public GameClass(GoogleInterface aInterface) {
+		platformInterface = aInterface;
+	}
+	
 	@Override
 	public void create() {
-		setScreen(new SplashScreen());
+		setScreen(new SplashScreen(platformInterface));
 	}
 
 	@Override
@@ -36,5 +42,4 @@ public class GameClass extends Game {
 		super.dispose();
 	}
 
-	
 }
