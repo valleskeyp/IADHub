@@ -20,6 +20,7 @@ public class ScoresDataSource {
 		DatabaseAdapter.COLUMN_ID,
 		DatabaseAdapter.PLAYER_NAME,
 		DatabaseAdapter.SCORE,
+		DatabaseAdapter.LEVEL,
 		DatabaseAdapter.UPDATEDAT
 	};
 	
@@ -40,20 +41,22 @@ public class ScoresDataSource {
 		
 		values.put(DatabaseAdapter.PLAYER_NAME, items[0]);
 		values.put(DatabaseAdapter.SCORE, items[1]);
+		values.put(DatabaseAdapter.LEVEL, items[2]);
 		values.put(DatabaseAdapter.UPDATEDAT, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		
 		long id = database.insert(DatabaseAdapter.TABLE_SCORES, null, values);
 		return id;
 	}
 	
-	public List<String> findAll() { // get all scores to list
+	public List<String> findAll() { // get database by score
 		
-		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, null, null, null, null, null);
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, null, null, null, null, "score DESC");
 		List<String> employees = cursorToList(cursor);
 		return employees;
 	}
-	public List<String> findFilter(String selection, String orderBy) { // get all scores through filter
+	public List<String> findByDay() { // get database by score
 		
-		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, selection, null, null, null, orderBy);
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, "DATE(updatedAt) = DATE('" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "')", null, null, null, "score DESC");
 		List<String> employees = cursorToList(cursor);
 		return employees;
 	}
@@ -64,7 +67,8 @@ public class ScoresDataSource {
 			while (cursor.moveToNext()) {
 				String str = 				 
 						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.PLAYER_NAME)) + ": " +
-						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.SCORE)) + " -- " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.SCORE)) + " points at level: " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.LEVEL)) + " -- " +
 						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.UPDATEDAT));
 				employees.add(str);
 			}

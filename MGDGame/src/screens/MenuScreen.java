@@ -20,7 +20,7 @@ public class MenuScreen implements Screen, InputProcessor {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
-	private Sprite sprite, login, logout, scoreButton, playButton, instructionButton, creditsButton;
+	private Sprite sprite, login, logout, achievements, scoreButton, playButton, instructionButton, creditsButton;
 	GoogleInterface platformInterface;
 	Boolean loggedIn = false;
 	
@@ -71,6 +71,16 @@ public class MenuScreen implements Screen, InputProcessor {
 		logout.setSize(.2f, .07f);
 		logout.setOrigin(logout.getWidth()/2, logout.getHeight()/2);
 		logout.setPosition(-.45f, -.235f);
+		
+		texture = new Texture(Gdx.files.internal("data/achievements.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 138, 47);
+		
+		achievements = new Sprite(region);
+		achievements.setSize(.2f, .07f);
+		achievements.setOrigin(achievements.getWidth()/2, achievements.getHeight()/2);
+		achievements.setPosition(-.45f, -.135f);
 		
 		// menu buttons
 		
@@ -127,6 +137,7 @@ public class MenuScreen implements Screen, InputProcessor {
 		sprite.draw(batch);
 		if (loggedIn) {
 			logout.draw(batch);
+			achievements.draw(batch);
 		} else {
 			login.draw(batch);
 		}
@@ -169,6 +180,10 @@ public class MenuScreen implements Screen, InputProcessor {
 		} else if (logout.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == true) {
 			platformInterface.LogOut();
 			loggedIn = false;
+		}
+        
+        if (achievements.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) && loggedIn == true) {
+			platformInterface.getAchievementData();
 		}
 		return true;
 	}

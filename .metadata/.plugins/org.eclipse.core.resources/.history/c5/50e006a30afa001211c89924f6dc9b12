@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_id">823609147476</string>
+    <string name="leaderBoardID">CgkI1IC5l_wXEAIQAQ</string>
+    
+    <string name="dontBlinkAchievement">CgkI1IC5l_wXEAIQAg</string>
+    <string name="onFireAchievement">CgkI1IC5l_wXEAIQAw</string>
+    <string name="perfectionistAchievement">CgkI1IC5l_wXEAIQBA</string>
+    <string name="52CardAchievement">CgkI1IC5l_wXEAIQBQ</string>
+    
+</resources>

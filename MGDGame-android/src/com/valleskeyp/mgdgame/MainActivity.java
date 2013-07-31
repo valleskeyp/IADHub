@@ -1,14 +1,9 @@
 package com.valleskeyp.mgdgame;
 
-import java.util.List;
-
-import screens.GameScreen;
 import sqlite.ScoresDataSource;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -24,8 +19,8 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	private GameHelper aHelper;
 	private OnLeaderboardScoresLoadedListener theLeaderboardListener;
 	ScoresDataSource datasource;
-	private List<String> highScores;
 	private String passedScore;
+	private String passedLevel;
 	
 	public MainActivity(){
         aHelper = new GameHelper(this);
@@ -129,7 +124,27 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 				1, 
 				25)	;
 	}
-
+	
+	public void getAchievementData() {
+		startActivityForResult(aHelper.getGamesClient().getAchievementsIntent(), 205);
+	}
+	
+	public void unlockAchievement(String achievement_id) {
+		if (achievement_id.equals("dontBlinkAchievement")) {
+			aHelper.getGamesClient().unlockAchievement(this.getString(R.string.dontBlinkAchievement));
+		} else if (achievement_id.equals("hotStreakAchievement")) {
+			aHelper.getGamesClient().unlockAchievement(this.getString(R.string.onFireAchievement));
+		} else if (achievement_id.equals("perfectionistAchievement")) {
+			aHelper.getGamesClient().unlockAchievement(this.getString(R.string.perfectionistAchievement));
+		}
+	}
+	
+	public void incrementAchievement(String achievement_id, int amount) {
+		if (achievement_id.equals("cardPickupAchievement")) {
+			aHelper.getGamesClient().incrementAchievement(this.getString(R.string.cardPickupAchievement), amount);
+		}
+	}
+	
 	@Override
 	public void goOfflineBoard() {
 		Intent intent = new Intent(this, ScoreActivity.class);
@@ -137,8 +152,10 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 	}
 
 	@Override
-	public void scorePopup(int score) {
+	public void scorePopup(int score, int level) {
 		passedScore = String.valueOf(score);
+		passedLevel = String.valueOf(level);
+		
 		runOnUiThread(new Runnable(){
 
 			//@Override
@@ -157,7 +174,7 @@ public class MainActivity extends AndroidApplication implements GameHelperListen
 						if (input.length() > 0) {
 							String value = input.getText().toString();
 							datasource.open();
-							datasource.create(new String[] {value, passedScore});
+							datasource.create(new String[] {value, passedScore, passedLevel});
 							
 						}
 					}

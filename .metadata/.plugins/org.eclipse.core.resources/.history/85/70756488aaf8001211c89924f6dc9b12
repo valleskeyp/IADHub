@@ -1,0 +1,53 @@
+package com.valleskeyp.mgdgame;
+
+import java.util.List;
+
+import sqlite.ScoresDataSource;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+public class ScoreActivity extends Activity {
+	ListView scoresList;
+	TextView filterScoreText;
+	ScoresDataSource datasource;
+	private Button filterLevel;
+	private Button filterScore;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	    setContentView(R.layout.main);
+	    
+	    datasource = new ScoresDataSource(this);
+	    scoresList = (ListView) findViewById(R.id.list_scores);
+	    filterScoreText = (TextView) findViewById(R.id.filterModeText);
+	    filterLevel = (Button) findViewById(R.id.filterLevel);
+	    filterScore = (Button) findViewById(R.id.filterScore);
+	    
+	    filterLevel.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) { // filter results by highest level achieved
+				
+			}
+		});
+	    
+	    filterScore.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) { // filter results by highest score achieved
+				
+			}
+		});
+	    
+	    datasource.open();
+	    List<String> scores = datasource.findByScore();
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, scores);
+		scoresList.setAdapter(adapter);
+	}
+}

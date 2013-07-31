@@ -21,5 +21,14 @@ public interface GoogleInterface {
 	public void goOfflineBoard();
 	
 	//extra - popup for name entry
-	public void scorePopup(int score);
+	public void scorePopup(int score, int level);
+	
+	//load achievements
+	public void getAchievementData();
+	
+	//unlock achievement
+	public void unlockAchievement(String achievement_id);
+	
+	//increment achievement
+	public void incrementAchievement(String achievement_id, int amount);
 }

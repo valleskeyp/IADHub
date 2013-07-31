@@ -1,0 +1,96 @@
+package sqlite;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.text.format.DateFormat;
+
+public class ScoresDataSource {
+	
+	SQLiteOpenHelper dbhelper;
+	SQLiteDatabase database;
+	
+	private static final String[] allColumns = {
+		DatabaseAdapter.COLUMN_ID,
+		DatabaseAdapter.PLAYER_NAME,
+		DatabaseAdapter.SCORE,
+		DatabaseAdapter.LEVEL,
+		DatabaseAdapter.UPDATEDAT
+	};
+	
+	public ScoresDataSource(Context context) {
+		dbhelper = new DatabaseAdapter(context);
+	}
+	
+	public void open() {
+		database = dbhelper.getWritableDatabase();
+	}
+	
+	public void close() {
+		dbhelper.close();
+	}
+	
+	public long create(String[] items) { // Add a score
+		ContentValues values = new ContentValues();
+		
+		values.put(DatabaseAdapter.PLAYER_NAME, items[0]);
+		values.put(DatabaseAdapter.SCORE, items[1]);
+		values.put(DatabaseAdapter.LEVEL, items[2]);
+		values.put(DatabaseAdapter.UPDATEDAT, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		
+		long id = database.insert(DatabaseAdapter.TABLE_SCORES, null, values);
+		return id;
+	}
+	
+	public List<String> findAll() { // get database by score
+		
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, null, null, null, null, "score DESC");
+		List<String> employees = cursorToList(cursor);
+		return employees;
+	}
+	public List<String> findByDay() { // get database by score
+		
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, "DATETIME(updatedAt) > DATETIME('" + getYesterdaDateString() + "')", null, null, null, "score DESC");
+		List<String> employees = cursorToList(cursor);
+		return employees;
+	}
+	private String getYesterdaDateString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);    
+        return dateFormat.format(cal.getTime());
+	}
+	public List<String> findByWeek() { // get database by level
+		
+		Cursor cursor = database.query(DatabaseAdapter.TABLE_SCORES, allColumns, "DATEDIFF(NOW(), updatedAt) <=7", null, null, null, "score DESC");
+		List<String> employees = cursorToList(cursor);
+		return employees;
+	}
+	
+	private List<String> cursorToList(Cursor cursor) { // returns list of strings to be displayed in listview - used in 'find' methods
+		List<String> employees = new ArrayList<String>();
+		if (cursor.getCount() > 0) {
+			while (cursor.moveToNext()) {
+				String str = 				 
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.PLAYER_NAME)) + ": " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.SCORE)) + " points at level: " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.LEVEL)) + " -- " +
+						cursor.getString(cursor.getColumnIndex(DatabaseAdapter.UPDATEDAT));
+				employees.add(str);
+			}
+		}
+		return employees;
+	}
+	
+	public void deleteRecords() { // delete all entries
+		database.delete(DatabaseAdapter.TABLE_SCORES, null, null);
+	}
+}

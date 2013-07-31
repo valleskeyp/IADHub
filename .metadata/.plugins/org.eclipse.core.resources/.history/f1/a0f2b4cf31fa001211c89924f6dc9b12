@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:background="@android:color/black" >
+
+	<LinearLayout
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:layout_gravity="center_vertical" >
+
+	    <Button
+	        android:id="@+id/filterDay"
+	        android:layout_marginBottom="20dp"
+	        android:layout_width="89dp"
+	        android:layout_height="wrap_content"
+	        android:text="Filter by Daily" />
+
+	    <Button
+	        android:id="@+id/filterWeek"
+	        android:layout_width="89dp"
+	        android:layout_marginBottom="20dp"
+	        android:layout_height="wrap_content"
+	        android:text="Filter by Weekly" />
+	    
+	    <Button
+	        android:id="@+id/filterAll"
+	        android:layout_width="89dp"
+	        android:layout_height="wrap_content"
+	        android:text="Filter by All Time" />
+	</LinearLayout>
+
+	<LinearLayout
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:layout_gravity="center_vertical" >
+	    <TextView
+            android:id="@+id/filterModeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Filtered by all time results"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark" >
+
+            <ListView
+                android:id="@+id/list_scores"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:listSelector="@android:color/transparent" 
+				android:cacheColorHint="@android:color/transparent" >
+            </ListView>
+        </LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
