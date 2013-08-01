@@ -33,7 +33,7 @@ public class ScoreActivity extends Activity {
 			@Override
 			public void onClick(View v) { // filter results by highest level achieved
 				List<String> scores = datasource.findByDay();
-				filterScoreText.setText("Filtered by one day results");
+				filterScoreText.setText("Filtered by daily results");
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(ScoreActivity.this, android.R.layout.simple_list_item_1, scores);
 				scoresList.setAdapter(adapter);
 			}

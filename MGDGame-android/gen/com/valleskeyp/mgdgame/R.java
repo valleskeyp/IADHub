@@ -172,8 +172,8 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020018;
     }
     public static final class id {
-        public static final int filterAll=0x7f050006;
-        public static final int filterDay=0x7f050005;
+        public static final int filterAll=0x7f050005;
+        public static final int filterDay=0x7f050006;
         public static final int filterModeText=0x7f050007;
         public static final int hybrid=0x7f050004;
         public static final int list_scores=0x7f050008;

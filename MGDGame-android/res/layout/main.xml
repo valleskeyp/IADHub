@@ -11,18 +11,21 @@
 	    android:orientation="vertical"
 	    android:layout_gravity="center_vertical" >
 
+		<Button
+		    android:id="@+id/filterAll"
+		    android:layout_width="89dp"
+		    android:layout_height="wrap_content"
+		    android:layout_marginBottom="20dp"
+		    android:text="Filter by All Time" />
+
 	    <Button
 	        android:id="@+id/filterDay"
-	        android:layout_marginBottom="20dp"
 	        android:layout_width="89dp"
+	        android:layout_marginBottom="20dp"
 	        android:layout_height="wrap_content"
 	        android:text="Filter by Daily" />
 	    
-	    <Button
-	        android:id="@+id/filterAll"
-	        android:layout_width="89dp"
-	        android:layout_height="wrap_content"
-	        android:text="Filter by All Time" />
+	    
 	</LinearLayout>
 
 	<LinearLayout

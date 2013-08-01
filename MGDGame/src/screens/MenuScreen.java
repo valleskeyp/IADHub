@@ -38,6 +38,7 @@ public class MenuScreen implements Screen, InputProcessor {
 		camera = new OrthographicCamera(1, h/w);
 		batch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
 		
 		// background    ----  Don't forget to add sprite to draw batch when done  ***AND ALSO DISPOSE***
 		texture = new Texture(Gdx.files.internal("data/splash.png"));

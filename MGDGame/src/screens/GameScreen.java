@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -69,6 +70,7 @@ public class GameScreen implements Screen, InputProcessor {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
 		
 		font = new BitmapFont(Gdx.files.internal("fonts/LucidaConsoleFont.fnt"), Gdx.files.internal("fonts/LucidaConsoleFont_0.png"), false);
 		font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -442,6 +444,10 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if(keycode == Keys.BACK){
+			bgMusic.stop();
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
+	    }
 		return false;
 	}
 

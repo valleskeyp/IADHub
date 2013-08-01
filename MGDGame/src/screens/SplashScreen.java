@@ -49,7 +49,7 @@ public class SplashScreen implements Screen{
 	public void render(float delta) {
 		float dt = Gdx.graphics.getDeltaTime();
 		time += dt;
-		if (time >= 3) {
+		if (time >= 2.5) {
 			((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
 		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);

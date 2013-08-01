@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,6 +35,7 @@ public class InstructionScreen implements Screen, InputProcessor {
 		camera = new OrthographicCamera(1, h/w);
 		batch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
 		
 		// background    ----  Don't forget to add sprite to draw batch when done  ***AND ALSO DISPOSE***
 		texture = new Texture(Gdx.files.internal("data/instructionsScreen.png"));
@@ -112,6 +114,9 @@ public class InstructionScreen implements Screen, InputProcessor {
 	}
 	@Override
 	public boolean keyDown(int keycode) {
+		if(keycode == Keys.BACK){
+        	((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen(platformInterface));
+	    }
 		return false;
 	}
 	@Override
